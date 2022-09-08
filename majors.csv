@@ -1,11 +1,11 @@
 id,name,credits_required,min_gpa
-97e75b82-d0aa-4952-8ecf-b58205034fa0,Communications,30,3.1
-66c9714d-eefd-44ad-9a09-86573ef1b7b9,Mathematics,30,3.2
-61c61b93-c1aa-4031-8f94-d22d6a85d116,Applied Mathematics,35,3.5
-a39f16d7-b79f-4c63-9115-d3dd2b7806a2,Computer Science,35,3.2
-d0c826eb-67f2-4667-a1a1-0cb349a39434,Physics,45,3.8
-753b60e5-377f-4264-8f2f-452ea26f5711,Marketing,45,3.1
-092ad3bc-a9f0-49ec-afbb-0b8bcb465713,Anatomy,40,3.7
-38b8d008-1512-4ce1-9bcc-a8c7ccf29b62,Fine Art,60,3.2
-ea69a0af-c970-4cc4-9f97-06d5c2daf832,Journalism,30,3.7
-fc9cde06-8ae1-452c-8f82-c8f03f9fdc06,Psychology,45,3.3
+d483549a-d671-4bd2-a00a-aebacd4e4406,Communications,30,3.1
+a46152bc-1089-4521-917c-6b9091115ee6,Mathematics,30,3.2
+7dcecf62-a2ec-4751-bdf6-9f9d435f4799,Applied Mathematics,35,3.5
+19dd511c-91e4-4420-9e08-253b3d937055,Computer Science,35,3.2
+0e7171eb-b44d-4ff7-8470-7ff390f66d10,Physics,45,3.8
+314dc71e-c8e0-4274-81cc-1a56f391dc3b,Marketing,45,3.1
+a9d770b6-273d-42b0-bcad-98ef62b21650,Anatomy,40,3.7
+5e8f4736-a72a-4303-8c73-5277ad840580,Fine Art,60,3.2
+e9ceffbc-6f10-4293-b2d6-7745ac30a14b,Journalism,30,3.7
+4717d6c4-9d67-4591-99f2-7d47c842aa71,Psychology,45,3.3

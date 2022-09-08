@@ -2,18 +2,14 @@ import { faker } from '@faker-js/faker';
 import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 
-// 1 - generate majors
 const majors = generateMajorsCsv();
-console.log(majors);
+generateCourses(majors);
 
-// 8 levels per course (no csv):
-// Intro to {x}, {x} 1000/2000/3000/4000/5000, Special Topics in {x}, Graduate Thesis in {x}
+// 3 - TODO generate 50k students (id], name)
+console.log(majors)
 
-// generate 50k students (id], name)
+// 4 - TODO generate 1M enrollments
 
-// generate 1M enrollments
-
-// id, name, major credits, min gpa
 function generateMajorsCsv() {
     const majorStream = fs.createWriteStream('majors.csv');
     majorStream.write("id,name,credits_required,min_gpa\n");
@@ -32,11 +28,33 @@ function generateMajorsCsv() {
     ].forEach(major => {
         const id = uuid();
         const csvLine = `${id},${major[0]},${major[1]},${major[2]}\n`;
-        majors[id] = major[0];
+        majors[id] = {
+            id,
+            name: major[0],
+            courses: [],
+        }
         majorStream.write(csvLine);
     });
 
     majorStream.end();
 
     return majors;
+}
+
+function generateCourses(majors) {
+    const courseLevels = [
+        'Intro to {major}',
+        '{major} 1000',
+        '{major} 2000',
+        '{major} 3000',
+        '{major} 4000',
+        '{major} 5000',
+        'Special Topics in {major}',
+        'Thesis in {major}',
+    ];
+    for (const [_, major] of Object.entries(majors)) {
+        courseLevels.forEach(course => {
+            major.courses.push(course.replace('{major}', major.name));
+        })
+    }
 }
