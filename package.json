@@ -6,6 +6,7 @@
   "type": "module",
   "dependencies": {
     "@faker-js/faker": "^7.5.0",
+    "gaussian": "^1.2.0",
     "uuid": "^9.0.0"
   }
 }

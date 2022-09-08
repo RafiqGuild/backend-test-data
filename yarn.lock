@@ -7,6 +7,11 @@
   resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-7.5.0.tgz#8e8265f65f5b68d2a57886d59b03788eeb676264"
   integrity sha512-8wNUCCUHvfvI0gQpDUho/3gPzABffnCn5um65F8dzQ86zz6dlt4+nmAA7PQUc8L+eH+9RgR/qzy5N/8kN0Ozdw==
 
+gaussian@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gaussian/-/gaussian-1.2.0.tgz#5b081744008c1b0a8eb510da695ed7328fb8913a"
+  integrity sha512-Pz/InFmDZ6VqCbXF+2+O6USIbPUPWhJ7DnqrZKfo9mMHszCd4pBad3WCVa9ruzzrBizYonsv0ZBmuv4rR8NRQg==
+
 uuid@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
