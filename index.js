@@ -3,15 +3,11 @@ import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 import gaussian from 'gaussian';
 
-// generate majors/course names
-const majors = generateMajorsCsv();
-generateCourses(majors);
+/***** config *****/
 
-// generate students
-const students = generateStudents(50000);
-
-// 4 - TODO generate 1M enrollments (approx)
-
+const studentCount = 100000;
+const gradeValues = [4, 3.7, 3.3, 3.0, 2.7, 2.3, 2.0, 1.7, 1.3, 1.0, 0.7, 0];
+const earliestYear = 2002;
 const grades = {
     4: 'A',
     3.7: 'A-',
@@ -25,111 +21,146 @@ const grades = {
     1.0: 'D',
     0.7: 'D-',
     0: 'F',
-}
-const gradeValues = [4, 3.7, 3.3, 3.0, 2.7, 2.3, 2.0, 1.7, 1.3, 1.0, 0.7, 0];
+};
 
-// cycle through each student and randomly select major vs non major courses based on major credits / 120 ratio (with slight bias toward major)
-const earliestYear = 2002;
-for (const [id, student] of Object.entries(students)) {
-    // determine major credit ratio
-    const studentMajor = majors[student.major];
-    const majorCreditRatio = studentMajor ? 0.15 + studentMajor.credits / 120 : 0;
+/***** runtime *****/
 
-    // randomize credit profile
-    const baseCredits = randomRangeInt(1, 31);
-    let multiplier;
-    const multiplierRoll = Math.random();
-    if (multiplierRoll >= 0.95) {
-        // 5% - no enrollments
-        multiplier = 0;
-    } else if (multiplierRoll >= 0.65) {
-        // 30% - 1-30 credits
-        multiplier = 1;
-    } else if (multiplierRoll >= 0.4) {
-        // 25% - 31-60 credits
-        multiplier = 2;
-    } else if (multiplierRoll >= 0.2) {
-        // 20% - 61-90 credits
-        multiplier = 3;
-    } else if (multiplierRoll >= 0.05) {
-        // 15% - 91-120 credits
-        multiplier = 4;
-    } else {
-        // 5% - 121-150 credits
-        multiplier = 5;
-    }
-    const totalCredits = baseCredits * multiplier;
+// generate majors/course names
+const majors = generateMajorsCsv();
+generateCourses(majors);
 
-    // random grade profile
-    const averageGrade = randomRange(2, 4);
-    const gradeStdDev = randomRange(0.25, 1);
-    const gradeDistribution = gaussian(averageGrade, gradeStdDev * gradeStdDev)
+// generate students/enrollments
+const students = generateStudents(studentCount);
+generateEnrollments(students, majors);
 
-    // determine enrollment range
-    const enrollmentRangeYears = randomRangeInt(1, 7);
-    const startEnrollmentYear = earliestYear + randomRangeInt(0, 20 - enrollmentRangeYears);
-    const endEnrollmentYear = startEnrollmentYear + enrollmentRangeYears;
+console.log('all done!');
 
-    // pick randomized enrollments to satisfy credits/ratio
-    let remainingCredits = totalCredits;
+/***** generator functions *****/
+
+function generateEnrollments(students, majors) {
+    // cycle through each student and randomly select major vs non major courses based on major credits / 120 ratio (with slight bias toward major)
     const enrollments = [];
-    const majorCourses = studentMajor ? JSON.parse(JSON.stringify(studentMajor.courses)) : [];
-    const nonMajorIds = Object.keys(majors).filter(id => id !== student.major)
-    while (remainingCredits > 0) {
-        const subjectRoll = Math.random();
-        let courseCredits = 0;
-        let course;
-        // decide if major or non-major course
-        if (subjectRoll < majorCreditRatio) {
-            // pick random major course
-            const randomElement = Math.floor(Math.random()*majorCourses.length);
-            // enrollments.push(majorCourses[randomElement]);
-            course = majorCourses[randomElement];
-            courseCredits += majorCourses[randomElement].credits;
-            majorCourses.splice(randomElement, 1);
-        } else {
-            // pick random non-major course
-            const randomMajor = majors[nonMajorIds[Math.floor(Math.random()*nonMajorIds.length)]].courses;
-            const randomElement = Math.floor(Math.random()*randomMajor.length);
-            // enrollments.push(randomMajor[randomElement])
-            course = randomMajor[randomElement];
-            courseCredits += randomMajor[randomElement].credits;
+    let count = 0;
+    for (const [id, student] of Object.entries(students)) {
+        count++;
+        if (count % 1000 === 0) {
+            console.log(`student ${count}`);
         }
 
-        // course start/end dates - should be 30-120 days apart, students total date range for all enrollments should be within 1-6 years
-        const startDate = randomRangeDate(new Date(startEnrollmentYear, 1, 1), new Date(endEnrollmentYear, 12, 31));
-        const endDate = new Date();
-        endDate.setDate(startDate.getDate()+randomRangeInt(30,120));
+        // determine major credit ratio
+        const studentMajor = majors[student.major];
+        const majorCreditRatio = studentMajor ? 0.15 + studentMajor.credits / 120 : 0;
 
-        // TODO grade
-        // TODO make some small amount of A into A+ just to mix things up
-        const courseGrade = gradeDistribution.ppf(Math.random());
-        const gradeValue = gradeValues.reduce((prev, curr) => Math.abs(curr - courseGrade) < Math.abs(prev - courseGrade) ? curr : prev);
+        // randomize credit profile
+        const baseCredits = randomRangeInt(1, 31);
+        let multiplier;
+        const multiplierRoll = Math.random();
+        if (multiplierRoll >= 0.95) {
+            // 5% - no enrollments
+            multiplier = 0;
+        } else if (multiplierRoll >= 0.65) {
+            // 30% - 1-30 credits
+            multiplier = 1;
+        } else if (multiplierRoll >= 0.4) {
+            // 25% - 31-60 credits
+            multiplier = 2;
+        } else if (multiplierRoll >= 0.2) {
+            // 20% - 61-90 credits
+            multiplier = 3;
+        } else if (multiplierRoll >= 0.05) {
+            // 15% - 91-120 credits
+            multiplier = 4;
+        } else {
+            // 5% - 121-150 credits
+            multiplier = 5;
+        }
+        const totalCredits = baseCredits * multiplier;
 
-        // generate enrollment - student id,course name,credit hours,start date,end date,cost,letter grade
-        enrollments.push([
-            id,
-            course.name,
-            course.credits,
-            startDate,
-            endDate,
-            course.cost,
-            grades[gradeValue],
-        ]);
+        // random grade profile
+        const averageGrade = randomRange(2, 4);
+        const gradeStdDev = randomRange(0.25, 1);
+        const gradeDistribution = gaussian(averageGrade, gradeStdDev * gradeStdDev)
 
-        remainingCredits -= courseCredits;
+        // determine enrollment range
+        const enrollmentRangeYears = randomRangeInt(1, 7);
+        const startEnrollmentYear = earliestYear + randomRangeInt(0, 20 - enrollmentRangeYears);
+        const endEnrollmentYear = startEnrollmentYear + enrollmentRangeYears;
+
+        // debug student info
+        // console.log('student', student);
+        // console.log('major', studentMajor?.name, totalCredits);
+        // console.log('target gpa', `${averageGrade} (std dev: ${gradeStdDev})`);
+        // console.log('year range', enrollmentRangeYears, startEnrollmentYear, endEnrollmentYear);
+
+        // pick randomized enrollments to satisfy credits/ratio
+        let remainingCredits = totalCredits;
+        const majorCourses = studentMajor ? JSON.parse(JSON.stringify(studentMajor.courses)) : [];
+        const nonMajorIds = Object.keys(majors).filter(id => id !== student.major);
+        while (remainingCredits > 0) {
+            const subjectRoll = Math.random();
+            let courseCredits = 0;
+            let course;
+            // decide if major or non-major course
+            if (subjectRoll < majorCreditRatio && majorCourses.length > 0) {
+                // pick random major course
+                const randomElement = Math.floor(Math.random()*majorCourses.length);
+                course = majorCourses[randomElement];
+                courseCredits += course.credits;
+                majorCourses.splice(randomElement, 1);
+            } else {
+                // pick random non-major course
+                const randomMajor = majors[nonMajorIds[Math.floor(Math.random()*nonMajorIds.length)]].courses;
+                const randomElement = Math.floor(Math.random()*randomMajor.length);
+                course = randomMajor[randomElement];
+                courseCredits += course.credits;
+            }
+
+            // course start/end dates - should be 30-120 days apart, students total date range for all enrollments should be within 1-6 years
+            const startDate = randomRangeDate(new Date(startEnrollmentYear, 1, 1), new Date(endEnrollmentYear, 12, 31));
+            const endDate = new Date();
+            endDate.setDate(startDate.getDate()+randomRangeInt(30,120));
+
+            // grade
+            const courseGrade = gradeDistribution.ppf(Math.random());
+            const gradeValue = gradeValues.reduce((prev, curr) => Math.abs(curr - courseGrade) < Math.abs(prev - courseGrade) ? curr : prev);
+            let letterGrade = grades[gradeValue];
+            letterGrade = letterGrade === 'A' && Math.random() > 0.8 ? 'A+' : letterGrade;
+
+            // generate enrollment - student id,course name,credit hours,start date,end date,cost,letter grade
+            enrollments.push([
+                id,
+                course.name,
+                course.credits,
+                startDate,
+                endDate,
+                course.cost,
+                letterGrade,
+            ]);
+
+            remainingCredits -= courseCredits;
+        }
     }
 
-    console.log('student', student);
-    console.log('major', studentMajor?.name, totalCredits);
-    console.log('target gpa', `${averageGrade} (std dev: ${gradeStdDev})`);
-    console.log('year range', enrollmentRangeYears, startEnrollmentYear, endEnrollmentYear);
-    console.log(enrollments)
+    console.log(`enrollments: ${enrollments.length}`);
 
-    throw ''
+    // randomize order & write to csv
+    const enrollmentStream = fs.createWriteStream('enrollments.csv');
+    enrollmentStream.write("student id,course name,credit hours,start date,end date,cost,letter grade\n");
+
+    let enrollmentCount = 0;
+    while (enrollments.length > 0) {
+        enrollmentCount++;
+        if (enrollmentCount % 1000 === 0) {
+            console.log(`enrollment ${enrollmentCount}`);
+        }
+
+        const randomElement = Math.floor(Math.random()*enrollments.length);
+        enrollmentStream.write(`${enrollments[randomElement].join(',')}\n`);
+        enrollments.splice(randomElement, 1);
+    }
+
+    enrollmentStream.end();
 }
-
-// TODO randomize enrollments in csv
 
 function generateMajorsCsv() {
     const majorStream = fs.createWriteStream('majors.csv');
@@ -195,20 +226,6 @@ function generateCourses(majors) {
     }
 }
 
-/**
- * Returns a random number between min (inclusive) and max (exclusive)
- */
-function randomRange(min, max) {
-    return Math.random() * (max - min) + min;
-}
-function randomRangeInt(min, max) {
-    return parseInt(randomRange(min, max));
-}
-
-function randomRangeDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-}
-
 function generateStudents(number) {
     const studentStream = fs.createWriteStream('students.csv');
     studentStream.write("id,name,major\n");
@@ -230,6 +247,17 @@ function generateStudents(number) {
     return students;
 }
 
+/***** utility functions *****/
+
+function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+function randomRangeInt(min, max) {
+    return parseInt(randomRange(min, max));
+}
+function randomRangeDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
 function randomProperty(obj) {
     const keys = Object.keys(obj);
     return obj[keys[ keys.length * Math.random() << 0]];
