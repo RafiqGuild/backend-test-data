@@ -115,10 +115,10 @@ function generateEnrollments(students, majors) {
                 courseCredits += course.credits;
             }
 
-            // course start/end dates - should be 30-120 days apart, students total date range for all enrollments should be within 1-6 years
+            // course start/end dates
             const startDate = randomRangeDate(new Date(startEnrollmentYear, 1, 1), new Date(endEnrollmentYear, 12, 31));
-            const endDate = new Date();
-            endDate.setDate(startDate.getDate()+randomRangeInt(30,120));
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate()+randomRangeInt(45,150));
 
             // grade
             const courseGrade = gradeDistribution.ppf(Math.random());
@@ -131,8 +131,8 @@ function generateEnrollments(students, majors) {
                 id,
                 course.name,
                 course.credits,
-                startDate,
-                endDate,
+                startDate.toISOString().split('T')[0],
+                endDate.toISOString().split('T')[0],
                 course.cost,
                 letterGrade,
             ]);

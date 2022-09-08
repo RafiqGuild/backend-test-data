@@ -1,0 +1,11 @@
+id,name,credits required,minimum gpa
+ae81bb93-da48-427f-918e-5740ae3a0b7a,Communications,30,3.1
+61b9bebe-e95f-49c0-b462-45185d679898,Mathematics,30,3.2
+f01a4b02-0783-4833-92a9-c552cee8088d,Applied Mathematics,35,3.5
+33f37d11-e24d-4cda-97d8-75369222b16c,Computer Science,35,3.2
+88d9facc-05a8-4a49-a072-63dd6fe853fb,Physics,45,3.8
+e528ba38-590c-4e8c-b35b-f531a5c46749,Marketing,45,3.1
+6c39de6b-68e9-43d4-a32a-3a8fd1a4b4c9,Anatomy,40,3.7
+27b5cf82-970f-4c1e-8f45-9c0efbd7747a,Fine Art,40,3.2
+38c1690d-0ab5-4192-bde8-98feab05c620,Journalism,30,3.7
+7d993dce-e9d9-4650-ba28-e3600964fef3,Psychology,45,3.3
