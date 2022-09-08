@@ -2,11 +2,12 @@ import { faker } from '@faker-js/faker';
 import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 
+// generate majors/course names
 const majors = generateMajorsCsv();
 generateCourses(majors);
 
-// 3 - TODO generate 50k students (id], name)
-console.log(majors)
+// generate students
+const students = generateStudents(50000);
 
 // 4 - TODO generate 1M enrollments
 
@@ -57,4 +58,19 @@ function generateCourses(majors) {
             major.courses.push(course.replace('{major}', major.name));
         })
     }
+}
+
+function generateStudents(number) {
+    const studentStream = fs.createWriteStream('students.csv');
+    studentStream.write("id,name\n");
+    const students = {};
+    for (let i = 0; i < number; i ++) {
+        const id = uuid();
+        const name = faker.name.fullName()
+        students[id] = name;
+        studentStream.write(`${id},${name}\n`);
+    }
+    studentStream.end();
+
+    return students;
 }
