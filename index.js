@@ -58,17 +58,17 @@ function generateEnrollments(students, majors) {
         if (multiplierRoll >= 0.95) {
             // 5% - no enrollments
             multiplier = 0;
-        } else if (multiplierRoll >= 0.65) {
-            // 30% - 1-30 credits
+        } else if (multiplierRoll >= 0.75) {
+            // 20% - 1-30 credits
             multiplier = 1;
-        } else if (multiplierRoll >= 0.4) {
+        } else if (multiplierRoll >= 0.50) {
             // 25% - 31-60 credits
             multiplier = 2;
-        } else if (multiplierRoll >= 0.2) {
-            // 20% - 61-90 credits
+        } else if (multiplierRoll >= 0.25) {
+            // 25% - 61-90 credits
             multiplier = 3;
         } else if (multiplierRoll >= 0.05) {
-            // 15% - 91-120 credits
+            // 20% - 91-120 credits
             multiplier = 4;
         } else {
             // 5% - 121-150 credits
